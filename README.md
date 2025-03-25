@@ -8,6 +8,8 @@ Connect multiple apps and services to generate stats and visualizations.
 Possible names:
 - TrackMe
 - TrackM3
+- ReFlexion / Reflexon  - A reflection of your data
+- Insightly – Gain insights about yourself
 
 ## Possible apps to integrate
 
