@@ -3,15 +3,15 @@
 App to generate statistics about yourself
 
 ## Idea
-Connect multiple apps and services to generate stats and visualizations.
+
+To provide users with a centralized dashboard to track their digital activity across different platforms like music streaming, gaming, and social media. By pulling data from APIs such as Spotify, Steam, GitHub, Chess.com, etc, it could generate personalized insights, trends, and visualizations. The goal would be to offer users an easy way to view their online habits all in one place, removing the need to check multiple services. The focus would be on seamless integration and creating a smooth, engaging user experience.
 
 Possible names:
-- TrackMe
-- TrackM3
+- TrackMe / TrackM3
 - ReFlexion / Reflexon  - A reflection of your data
 - Insightly – Gain insights about yourself
 
-## Possible apps to integrate
+## Apps to integrate
 
 ### Gaming
 - [Steam](https://steamcommunity.com/dev)
