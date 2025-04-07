@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import { useState, useEffect, useMemo } from "react"
 //import { TrendingUp } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,46 +32,47 @@ export function WinRate() {
       };
     };
   }
-  const [selectedMode, setSelectedMode] = React.useState("blitz")
-  const [statsData, setStatsData] = React.useState<StatsData | null>(null)
-  const [chartData, setChartData] = React.useState([
+  const [selectedMode, setSelectedMode] = useState("blitz")
+  const [statsData, setStatsData] = useState<StatsData | null>(null)
+  const [chartData, setChartData] = useState([
     { name: "Wins", value: 0, fill: "var(--chart-2)" },
     { name: "Losses", value: 0, fill: "var(--chart-5)" },
     { name: "Draws", value: 0, fill: "var(--chart-1)" },
   ])
 
-  const totalCount = React.useMemo(() => {
+  const totalCount = useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.value, 0)
   }, [chartData])
 
-  // Fetch data once and store it
-  React.useEffect(() => {
-    const username = "rtallarr"
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`https://api.chess.com/pub/player/${username}/stats`)
-        if (!response.ok) throw new Error("Failed to fetch stats")
-        const stats = await response.json()
-        console.log("Fetched stats:", stats)
-        setStatsData(stats)
-      } catch (error) {
-        console.error(error)
+  useEffect(() => {
+    const appsUsernames = localStorage.getItem("appsUsernames");
+    if (appsUsernames) {
+      const parsedUsernames = JSON.parse(appsUsernames);
+      const chessUsername = parsedUsernames["Chess.com"];
+
+      if (chessUsername) {
+        const fetchData = async () => {
+          try {
+            const response = await fetch(
+              `https://api.chess.com/pub/player/${chessUsername}/stats`
+            );
+            if (!response.ok) throw new Error("Failed to fetch stats");
+            const stats = await response.json();
+            console.log("Fetched stats:", stats);
+            setStatsData(stats);
+          } catch (error) {
+            console.error(error);
+          }
+        };
+        fetchData();
       }
     }
-    fetchData()
-  }, [])
+  }, []);
 
   // Update chartData
-  React.useEffect(() => {
+  useEffect(() => {
     if (!statsData) return
-    let modeKey = "blitz";
-    if (selectedMode === "blitz") {
-      modeKey = "chess_blitz";
-    } else if (selectedMode === "bullet") {
-      modeKey = "chess_bullet";
-    } else if (selectedMode === "rapid") {
-      modeKey = "chess_rapid";
-    }
+    const modeKey = "chess_" + selectedMode
 
     const wins = statsData[modeKey]?.record.win || 0;
     const losses = statsData[modeKey]?.record.loss || 0;
@@ -87,8 +88,8 @@ export function WinRate() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>Chess.com stats</CardDescription>
+        <CardTitle>Win rate</CardTitle>
+        <CardDescription>Chess.com</CardDescription>
         <Select value={selectedMode} onValueChange={(value) => setSelectedMode(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue />
