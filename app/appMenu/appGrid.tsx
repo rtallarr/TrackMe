@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 
 const cardData = [
     { title: "Spotify", description: "This is the description for card 1.", footer: "Footer 1" },
+    { title: "Steam", description: "This is the description for card 2.", footer: "Footer 2", open: true },
     { title: "Github", description: "This is the description for card 2.", footer: "Footer 2" },
     { title: "Chess.com", description: "This is the description for card 3.", footer: "Footer 3", open: true },
     { title: "Lichess", description: "This is the description for card 4.", footer: "Footer 4" },
@@ -28,17 +29,24 @@ export default function AppGrid() {
         }
     }, []);
 
-    const setUsername = (appName: string) => {
+    const setUsername = async (appName: string) => {
         const input = inputRefs.current[appName];
         const newUsername = input?.value || "";
-
+      
         const updatedUsernames = {
-            ...usernames,
-            [appName]: newUsername,
+          ...usernames,
+          [appName]: newUsername,
         };
-
+      
         setUsernames(updatedUsernames);
         localStorage.setItem("appsUsernames", JSON.stringify(updatedUsernames));
+      
+        await fetch("/api/save-usernames", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedUsernames),
+          credentials: 'include'
+        });
     };
 
     return (

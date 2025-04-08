@@ -58,7 +58,7 @@ export function WinRate() {
             );
             if (!response.ok) throw new Error("Failed to fetch stats");
             const stats = await response.json();
-            console.log("Fetched stats:", stats);
+            //console.log("Fetched stats:", stats);
             setStatsData(stats);
           } catch (error) {
             console.error(error);
