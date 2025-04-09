@@ -28,7 +28,8 @@ Possible names:
 - Whatsapp
 
 ### Fitness
-- Check for apps and apis (missing)
+- [Android Health Connect](https://hcgateway.shuchir.dev/)
+- Apple HealthKit
 
 ### Music
 - [Spotify](https://developer.spotify.com/documentation/web-api)
@@ -39,11 +40,16 @@ Possible names:
 
 # Getting Started
 
-First, run the development server:
+First, run the development server using Yarn:
 
 ```bash
 yarn install
 yarn dev
+```
+
+Or using NPM:
+```bash
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
