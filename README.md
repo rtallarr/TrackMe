@@ -1,3 +1,6 @@
+![Static Badge](https://img.shields.io/badge/Next.js-15-blue)
+![Static Badge](https://img.shields.io/badge/Tailwind-4-blue)
+
 # TrackMe
 
 App to generate statistics about yourself
