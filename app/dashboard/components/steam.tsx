@@ -49,7 +49,7 @@ export function Playtime({ appId, steamId }: props) {
 
         const chartFormattedData = formattedData.map((game: Game) => ({
           name: game.appid,
-          playtime: game.playtime_forever,
+          playtime: game.playtime_forever/60,
         }));
 
         setChartData(chartFormattedData);
@@ -69,8 +69,8 @@ export function Playtime({ appId, steamId }: props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Game name</CardTitle>
-        <CardDescription>Stats</CardDescription>
+        <CardTitle>Steam playtime</CardTitle>
+        <CardDescription>Game vs Hours</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
