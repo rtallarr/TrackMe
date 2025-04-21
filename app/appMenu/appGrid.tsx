@@ -34,7 +34,7 @@ export default function AppGrid() {
         const newUsername = input?.value.trim() || "";
 
         if (!newUsername) {
-            toast(`Please enter a valid ${appName} username.`);
+            toast.info(`Please enter a valid ${appName} username.`);
             return;
         }
       
@@ -55,12 +55,12 @@ export default function AppGrid() {
             });
 
             if (res.ok) {
-                toast(`Saved ${appName} username.`);
+                toast.success(`Saved ${appName} username.`);
             } else {
-                toast(`Failed to save ${appName} username.`);
+                toast.error(`Failed to save ${appName} username.`);
             }
         } catch {
-            toast("Server error. Try again later.");
+            toast.error("Server error. Try again later.");
         }
     };
 
