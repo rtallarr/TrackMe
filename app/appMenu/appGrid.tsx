@@ -6,16 +6,15 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 const cardData = [
-    { title: "Spotify", description: "This is the description for card 1.", footer: "Footer 1" },
-    { title: "Steam", description: "This is the description for card 2.", footer: "Footer 2", open: true },
-    { title: "Github", description: "This is the description for card 2.", footer: "Footer 2" },
-    { title: "Chess.com", description: "This is the description for card 3.", footer: "Footer 3", open: true },
-    { title: "Lichess", description: "This is the description for card 4.", footer: "Footer 4" },
-    { title: "Valorant", description: "This is the description for card 5.", footer: "Footer 5" },
-    { title: "League of legends", description: "This is the description for card 6.", footer: "Footer 6" },
-    { title: "OSRS", description: "This is the description for card 7.", footer: "Footer 7", open: true },
-    { title: "Runescape", description: "This is the description for card 8.", footer: "Footer 8", open: true },
-    { title: "Twitter", description: "This is the description for card 9.", footer: "Footer 9" },
+    { title: "Spotify", description: "This is the description for card 1." },
+    { title: "Steam", description: "This is the description for card 2.", prompt: "Steam ID" },
+    { title: "Github", description: "This is the description for card 2."  },
+    { title: "Chess.com", description: "This is the description for card 3.", prompt: "Username" },
+    { title: "Lichess", description: "This is the description for card 4." },
+    { title: "Valorant", description: "This is the description for card 5." },
+    { title: "League of legends", description: "This is the description for card 6." },
+    { title: "Runescape/OSRS", description: "This is the description for card 7.", prompt: "Username", open: true },
+    { title: "Twitter", description: "This is the description for card 9." },
 ];
 
 export default function AppGrid() {
@@ -59,10 +58,10 @@ export default function AppGrid() {
                     <CardContent>
                         <CardDescription className="space-y-2">
                             <p>{card.description}</p>
-                            {card.open && (                    
+                            {card.prompt && (                    
                                 <Input
                                 id={`username-${index}`}
-                                placeholder="Username"
+                                placeholder={card.prompt}
                                 defaultValue={usernames[card.title] || ""}
                                 ref={(el) => { inputRefs.current[card.title] = el; }}
                                 />

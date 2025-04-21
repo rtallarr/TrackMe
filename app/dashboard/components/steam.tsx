@@ -41,7 +41,7 @@ export function Playtime({ steamId }: { steamId: string }) {
         const formattedData = data.response.games
           .filter((game: Game) => game.playtime_forever > 0)
           .sort((a: Game, b: Game) => b.playtime_forever - a.playtime_forever)
-          .slice(0, 20);
+          .slice(0, 10);
 
         const chartFormattedData = formattedData.map((game: Game) => ({
           name: game.name,
