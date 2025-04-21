@@ -18,7 +18,7 @@ export default async function Page() {
   return (
     <div>
       {usernames && usernames["Steam"] ? (
-        <Playtime appId="252490" steamId={usernames["Steam"]} />
+        <Playtime steamId={usernames["Steam"]} />
       ) : (
         <p>No steam ID set</p>
       )}
@@ -26,3 +26,7 @@ export default async function Page() {
     </div>
   );
 }
+
+// App ID
+// schedule I - 3164500
+// rust - 252490

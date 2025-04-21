@@ -23,7 +23,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized or missing API key" }, { status: 401 });
   }
 
-  const url = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${apiKey}&steamid=${steamID}&format=json`;
+  const url = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${apiKey}&steamid=${steamID}&include_played_free_games=true&include_appinfo=true&format=json`;
 
   try {
     const res = await fetch(url);

@@ -13,13 +13,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-type props = {
-	appId: string
-	steamId: string
-}
-
 type Game = {
   appid: number;
+  name: string;
   playtime_deck_forever: number;
   playtime_disconnected: number;
   playtime_forever: number;
@@ -29,7 +25,7 @@ type Game = {
   rtime_last_played: number;
 }
 
-export function Playtime({ appId, steamId }: props) {
+export function Playtime({ steamId }: { steamId: string }) {
   const [chartData, setChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -48,7 +44,7 @@ export function Playtime({ appId, steamId }: props) {
           .slice(0, 20);
 
         const chartFormattedData = formattedData.map((game: Game) => ({
-          name: game.appid,
+          name: game.name,
           playtime: game.playtime_forever/60,
         }));
 
@@ -60,7 +56,7 @@ export function Playtime({ appId, steamId }: props) {
       }
     };
     fetchData();
-  }, [appId, steamId]);
+  }, [steamId]);
 
   if (isLoading) {
     return <p>Loading game stats...</p>;
@@ -81,10 +77,9 @@ export function Playtime({ appId, steamId }: props) {
             margin={{
               top: 0,
               right: 0,
-              bottom: 10,
+              bottom: 0,
               left: 0,
             }}
-            height={500}
           >
             <XAxis type="number" dataKey="playtime" />
             <YAxis
