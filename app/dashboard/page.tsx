@@ -16,7 +16,7 @@ export default async function Page() {
   }
 
   return (
-    <div>
+    <div className="space-y-8 p-6">
       {usernames && usernames["Steam"] ? (
         <Playtime steamId={usernames["Steam"]} />
       ) : (

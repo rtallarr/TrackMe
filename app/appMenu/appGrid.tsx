@@ -4,17 +4,18 @@ import { useEffect, useRef, useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 const cardData = [
-    { title: "Spotify", description: "This is the description for card 1." },
-    { title: "Steam", description: "This is the description for card 2.", prompt: "Steam ID" },
-    { title: "Github", description: "This is the description for card 2."  },
-    { title: "Chess.com", description: "This is the description for card 3.", prompt: "Username" },
-    { title: "Lichess", description: "This is the description for card 4." },
-    { title: "Valorant", description: "This is the description for card 5." },
-    { title: "League of legends", description: "This is the description for card 6." },
-    { title: "Runescape/OSRS", description: "This is the description for card 7.", prompt: "Username", open: true },
-    { title: "Twitter", description: "This is the description for card 9." },
+    { title: "Spotify", description: "Track your top songs and artists." },
+    { title: "Steam", description: "See your playtime stats and favorite games.", prompt: "Steam ID" },
+    { title: "Github", description: "View your contribution history." },
+    { title: "Chess.com", description: "Track wins, losses, and rating.", prompt: "Username" },
+    { title: "Lichess", description: "Analyze your recent matches." },
+    { title: "Valorant", description: "View your match history and rank." },
+    { title: "League of Legends", description: "Get your stats and match history." },
+    { title: "Runescape/OSRS", description: "Track your skills and quests.", prompt: "Username", open: true },
+    { title: "Twitter", description: "Analyze your tweets and growth." },
 ];
 
 export default function AppGrid() {
@@ -30,7 +31,12 @@ export default function AppGrid() {
 
     const setUsername = async (appName: string) => {
         const input = inputRefs.current[appName];
-        const newUsername = input?.value || "";
+        const newUsername = input?.value.trim() || "";
+
+        if (!newUsername) {
+            toast(`Please enter a valid ${appName} username.`);
+            return;
+        }
       
         const updatedUsernames = {
           ...usernames,
@@ -39,17 +45,27 @@ export default function AppGrid() {
       
         setUsernames(updatedUsernames);
         localStorage.setItem("appsUsernames", JSON.stringify(updatedUsernames));
-      
-        await fetch("/api/save-usernames", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedUsernames),
-          credentials: 'include'
-        });
+        
+        try {
+            const res = await fetch("/api/save-usernames", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedUsernames),
+                credentials: 'include'
+            });
+
+            if (res.ok) {
+                toast(`Saved ${appName} username.`);
+            } else {
+                toast(`Failed to save ${appName} username.`);
+            }
+        } catch {
+            toast("Server error. Try again later.");
+        }
     };
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {cardData.map((card, index) => (
                 <Card key={index}>
                     <CardHeader>
@@ -58,7 +74,7 @@ export default function AppGrid() {
                     <CardContent>
                         <CardDescription className="space-y-2">
                             <p>{card.description}</p>
-                            {card.prompt && (                    
+                            {card.prompt && (
                                 <Input
                                 id={`username-${index}`}
                                 placeholder={card.prompt}
