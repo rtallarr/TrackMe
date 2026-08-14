@@ -19,14 +19,10 @@ export default async function Page() {
     <div className="space-y-8 p-6">
       {usernames && usernames["Steam"] ? (
         <Playtime steamId={usernames["Steam"]} />
-      ) : (
-        <p>No steam ID set</p>
-      )}
-      <WinRate />
+      ) : null}
+      {usernames && usernames["Chess.com"] ? (
+        <WinRate />
+      ) : null}
     </div>
   );
 }
-
-// App ID
-// schedule I - 3164500
-// rust - 252490

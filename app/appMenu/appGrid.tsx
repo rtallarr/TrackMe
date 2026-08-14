@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
 const cardData = [
-    { title: "Spotify", description: "Track your top songs and artists." },
-    { title: "Steam", description: "See your playtime stats and favorite games.", prompt: "Steam ID" },
+    { title: "Spotify", description: "Track your top songs and artists.", buttonText: "Connect" },
+    { title: "Steam", description: "See your playtime stats and favorite games.", prompt: "Steam ID"},
     { title: "Github", description: "View your contribution history." },
     { title: "Chess.com", description: "Track wins, losses, and rating.", prompt: "Username" },
     { title: "Lichess", description: "Analyze your recent matches." },
     { title: "Valorant", description: "View your match history and rank." },
     { title: "League of Legends", description: "Get your stats and match history." },
-    { title: "Runescape/OSRS", description: "Track your skills and quests.", prompt: "Username", open: true },
+    { title: "OSRS", description: "Track your skills and quests.", prompt: "Username" },
     { title: "Twitter", description: "Analyze your tweets and growth." },
 ];
 
@@ -86,7 +86,7 @@ export default function AppGrid() {
                     </CardContent>
                     <CardFooter>
                         <Button variant="secondary" className="m-auto w-full" onClick={() => setUsername(card.title)}>
-                            Connect
+                            {card.buttonText ?? "Save"}
                         </Button>
                     </CardFooter>
                 </Card>
