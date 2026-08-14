@@ -45,8 +45,12 @@ Possible names:
 First, run the development server:
 
 ```bash
-yarn install
-yarn dev
+pnpm install
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Steam
+
+Get an Api key from [Steam](https://steamcommunity.com/dev/apikey) and paste it as `STEAM_API_KEY = YourKeyHere` in the `.env` file.
