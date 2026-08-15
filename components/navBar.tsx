@@ -1,5 +1,6 @@
 'use client';
 
+import Logo from '@/components/logo';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -17,9 +18,11 @@ export default function NavBar() {
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/75 backdrop-blur-xl">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-foreground text-sm font-semibold text-background">
-            T
-          </div>
+          <Logo
+            size={20}
+            containerClassName="h-8 w-8"
+            imageClassName="h-5 w-5"
+          />
           <span className="text-base font-semibold tracking-tight">TrackMe</span>
         </Link>
 

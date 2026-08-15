@@ -1,3 +1,4 @@
+import Logo from "@/components/logo";
 import Link from "next/link";
 
 const featureItems = [
@@ -20,9 +21,11 @@ export default function Home() {
       >
         <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-foreground text-lg font-semibold text-background">
-              T
-            </div>
+            <Logo
+              size={28}
+              containerClassName="h-11 w-11 rounded-2xl"
+              imageClassName="h-7 w-7"
+            />
             <div>
               <p className="text-lg font-semibold tracking-tight">TrackMe</p>
               <p className="text-xs text-muted-foreground">Your stats, in one place</p>
