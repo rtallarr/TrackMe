@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { Playtime } from "@/app/dashboard/components/steam";
 import { WinRate } from "./components/chess";
+import { SpotifyTopTracks } from "./components/spotify";
 
 export default async function Page() {
   const cookieStore = await cookies();
@@ -16,7 +17,8 @@ export default async function Page() {
   }
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 py-8 px-64">
+      <SpotifyTopTracks />
       {usernames && usernames["Steam"] ? (
         <Playtime steamId={usernames["Steam"]} />
       ) : null}

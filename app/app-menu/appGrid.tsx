@@ -30,6 +30,11 @@ export default function AppGrid() {
     }, []);
 
     const setUsername = async (appName: string) => {
+        if (appName === "Spotify") {
+            window.location.href = "/api/spotify/login";
+            return;
+        }
+
         const input = inputRefs.current[appName];
         const newUsername = input?.value.trim() || "";
 
