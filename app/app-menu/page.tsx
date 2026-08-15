@@ -1,4 +1,4 @@
-import AppGrid from "@/app/appMenu/appGrid";
+import AppGrid from "@/app/app-menu/appGrid";
 
 export default function Page() {
     return (
