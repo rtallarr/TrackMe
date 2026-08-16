@@ -19,17 +19,13 @@ type OAuthStatePayload = {
 const STATE_MAX_AGE_SECONDS = 60 * 10;
 
 const getRedirectUri = (req: NextRequest): string => {
-  if (process.env.NODE_ENV !== "production") {
-    return `${process.env.LOCALHOST_URL}/api/spotify/callback`;
-  }
-
   const configuredRedirectUri = process.env.SPOTIFY_REDIRECT_URI;
 
   if (configuredRedirectUri) {
     return configuredRedirectUri;
   }
 
-  return "`${req.nextUrl.origin}/api/spotify/callback`";
+  return `${req.nextUrl.origin}/api/spotify/callback`;
 };
 
 const isValidSignedState = (state: string, secret: string): boolean => {
@@ -129,7 +125,16 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const response = NextResponse.redirect(new URL("/dashboard?spotify=connected", req.url), 302);
+  //const response = NextResponse.redirect(new URL("/dashboard?spotify=connected", req.url), 302);
+
+  let dashboardUrl: string;
+  if (process.env.NODE_ENV !== "production") {
+    dashboardUrl = "http://127.0.0.1:3000/dashboard?spotify=connected"
+  } else {
+    dashboardUrl = `${req.nextUrl.origin}/dashboard?spotify=connected`
+  }
+
+  const response = NextResponse.redirect(dashboardUrl, 302);
 
   response.cookies.set("spotify_refresh_token", tokenData.refresh_token, {
     httpOnly: true,

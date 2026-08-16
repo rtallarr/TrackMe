@@ -5,10 +5,6 @@ const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_SCOPES = ["user-top-read"];
 
 const getRedirectUri = (req: NextRequest): string => {
-  if (process.env.NODE_ENV !== "production") {
-    return `${process.env.LOCALHOST_URL}/api/spotify/callback`;
-  }
-
   const configuredRedirectUri = process.env.SPOTIFY_REDIRECT_URI;
 
   if (configuredRedirectUri) {
