@@ -61,7 +61,7 @@ export default function LearnMorePage() {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/appMenu"
+            href="/app-menu"
             className="inline-flex h-11 items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
           >
             Get started
