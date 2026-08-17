@@ -88,8 +88,8 @@ export function WinRate() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Win rate</CardTitle>
-        <CardDescription>Chess.com</CardDescription>
+        <CardTitle>Chess win rate</CardTitle>
+        <CardDescription>Chess wins, losses and draws for chess apps </CardDescription>
         <Select value={selectedMode} onValueChange={(value) => setSelectedMode(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue />

@@ -11,7 +11,7 @@ const cardData = [
     { title: "Steam", description: "See your playtime stats and favorite games.", prompt: "Steam ID"},
     { title: "Github", description: "View your contribution history." },
     { title: "Chess.com", description: "Track wins, losses, and rating.", prompt: "Username" },
-    { title: "Lichess", description: "Analyze your recent matches." },
+    { title: "Lichess", description: "Analyze your recent matches.", buttonText: "Connect" },
     { title: "Valorant", description: "View your match history and rank." },
     { title: "League of Legends", description: "Get your stats and match history." },
     { title: "OSRS", description: "Track your skills and quests.", prompt: "Username" },
@@ -32,6 +32,11 @@ export default function AppGrid() {
     const setUsername = async (appName: string) => {
         if (appName === "Spotify") {
             window.location.href = "/api/spotify/login";
+            return;
+        }
+
+        if (appName === "Lichess") {
+            window.location.href = "/api/lichess/login";
             return;
         }
 

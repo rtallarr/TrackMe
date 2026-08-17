@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
-import { Playtime } from "@/app/dashboard/components/steam";
-import { WinRate } from "./components/chess";
-import { SpotifyTopTracks } from "./components/spotify";
+import { Playtime } from "@/app/dashboard/section/steam";
+import { WinRate } from "./section/chess/chess";
+import { SpotifyTopTracks } from "./section/spotify";
+import { LichessAccount } from "./section/chess/lichess";
 
 export default async function Page() {
   const cookieStore = await cookies();
@@ -26,6 +27,10 @@ export default async function Page() {
         <div className="flex-1">
           {usernames && usernames["Chess.com"] ? <WinRate /> : null}
         </div>
+      </div>
+
+      <div className="flex-1">
+        <LichessAccount />
       </div>
 
       <div className="mt-8">
