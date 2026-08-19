@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { WinRateChart } from "./WinRateChart"
@@ -12,17 +12,20 @@ type ChessRecord = {
   //add rating
 };
 
-type ChessStats = {
+type ChessComStats = {
   [key: string]: {
     record: ChessRecord;
   };
 };
 
+type LichessStats = {
+  games: Record<string, ChessRecord>;
+};
+
 export function WinRate() {
   const [selectedMode, setSelectedMode] = useState("blitz")
-  const [chessComData, setChessComData] = useState<ChessRecord | null>(null);
-  const [lichessData, setLichessData] = useState<ChessRecord | null>(null);
-  const [statsData, setStatsData] = useState<ChessStats | null>(null);
+  const [chessComStats, setChessComStats] = useState<ChessComStats | null>(null);
+  const [lichessStats, setLichessData] = useState<LichessStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notConnected, setNotConnected] = useState(false);
@@ -48,14 +51,12 @@ export function WinRate() {
             throw new Error("Failed to fetch Chess.com stats");
           }
 
-          const stats = (await response.json()) as ChessStats;
+          const stats = (await response.json()) as ChessComStats;
 
-          const modeKey = `chess_${selectedMode}`;
-
-          setChessComData(stats[modeKey]?.record ?? null);
+          setChessComStats(stats);
         } catch (error) {
           console.error("Chess.com:", error);
-          setChessComData(null);
+          setChessComStats(null);
         }
       }
     };
@@ -66,11 +67,11 @@ export function WinRate() {
       setNotConnected(false);
 
       try {
-        const res = await fetch(`/api/lichess/account`, {
+        const res = await fetch(`/api/lichess/stats`, {
           cache: "no-store",
         });
 
-        const data = await res.json();
+        const data = (await res.json()) as LichessStats;
 
         if (!res.ok) {
           const message = "Failed to load Lichess stats";
@@ -82,7 +83,7 @@ export function WinRate() {
           return;
         }
 
-        setLichessData(data.games[selectedMode]);
+        setLichessData(data);
       } catch {
         setError("Network error while loading Lichess account");
         setLichessData(null);
@@ -93,14 +94,11 @@ export function WinRate() {
 
     fetchDataChess();
     fetchDataLichess()
-  }, [selectedMode]);
+  }, []);
 
-  useEffect(() => {
-    if (!statsData) return;
+  const chessComData = chessComStats?.[`chess_${selectedMode}`]?.record ?? null;
 
-    const modeKey = `chess_${selectedMode}`;
-    setChessComData(statsData[modeKey]?.record ?? null);
-  }, [statsData, selectedMode]);
+  const lichessData = lichessStats?.games[selectedMode] ?? null;
 
   return (
     <Card className="flex flex-col">
@@ -119,23 +117,33 @@ export function WinRate() {
         </Select>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {chessComData && (
-              <WinRateChart
-              title="Chess.com"
-              description={""}
-              data={chessComData}
-              />
-          )}
+        {loading ? <p>Loading data...</p> : null}
 
-          {lichessData && (
+        {!loading && !error && chessComData && lichessData ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {chessComData && (
+                <WinRateChart
+                title="Chess.com"
+                description={""}
+                data={chessComData}
+                />
+            )}
+
+            {lichessData && !notConnected ? (
               <WinRateChart
-              title="Lichess"
-              description={""}
-              data={lichessData}
+                title="Lichess"
+                description={""}
+                data={lichessData}
               />
-          )}
-        </div>
+            ) : notConnected ? (
+                <div className="flex flex-col items-center justify-center p-4">
+                  <p className="text-sm text-muted-foreground">
+                    Not connected to Lichess
+                  </p>
+                </div>
+            ) : null}
+          </div>
+        ) : null}
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         {/* <div className="flex items-center gap-2 font-medium leading-none">

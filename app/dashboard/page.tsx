@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { Playtime } from "@/app/dashboard/section/steam";
-import { SpotifyTopTracks } from "./section/spotify";
-import { WinRate } from "./section/chess/chess";
+import { Playtime } from "@/app/dashboard/components/steam";
+import { SpotifyTopTracks } from "./components/spotify";
+import { WinRate } from "./components/chess/chess";
 
 export default async function Page() {
   const cookieStore = await cookies();

@@ -141,7 +141,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const lichessUser = (await userResponse.json()) as LichessUser;
+    //const lichessUser = (await userResponse.json()) as LichessUser;
 
     const dashboardUrl =
     process.env.NODE_ENV !== "production"
