@@ -4,17 +4,16 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { WinRateChart } from "./WinRateChart"
-
-type ChessRecord = {
-  win: number;
-  loss: number;
-  draw: number;
-  //add rating
-};
+import { ChessRecord } from "@/lib/chess/types"
 
 type ChessComStats = {
   [key: string]: {
     record: ChessRecord;
+    last: {
+      rating: number;
+      date: number;
+      rd: number;
+    };
   };
 };
 
@@ -48,7 +47,7 @@ export function WinRate() {
           );
 
           if (!response.ok) {
-            throw new Error("Failed to fetch Chess.com stats");
+            setError("Failed to fetch Chess.com stats");
           }
 
           const stats = (await response.json()) as ChessComStats;
@@ -82,7 +81,7 @@ export function WinRate() {
           setLichessData(null);
           return;
         }
-
+        
         setLichessData(data);
       } catch {
         setError("Network error while loading Lichess account");
@@ -96,7 +95,13 @@ export function WinRate() {
     fetchDataLichess()
   }, []);
 
-  const chessComData = chessComStats?.[`chess_${selectedMode}`]?.record ?? null;
+  const chessComMode = chessComStats?.[`chess_${selectedMode}`]
+  const chessComData = {
+    win: chessComMode?.record.win ?? 0,
+    loss: chessComMode?.record.loss ?? 0,
+    draw: chessComMode?.record.draw ?? 0,
+    rating: chessComMode?.last.rating ?? 0,
+  }
 
   const lichessData = lichessStats?.games[selectedMode] ?? null;
 

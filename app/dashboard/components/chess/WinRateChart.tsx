@@ -4,12 +4,7 @@ import { useMemo } from "react";
 import { Label, Pie, PieChart } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-
-type ChessRecord = {
-  win: number;
-  loss: number;
-  draw: number;
-};
+import { ChessRecord } from "@/lib/chess/types";
 
 type WinRateChartProps = {
   title: string;
@@ -62,11 +57,14 @@ export function WinRateChart({
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="items-center flex place-content-between pb-0">
         <CardTitle>{title}</CardTitle>
         {description ? (
           <CardDescription>{description}</CardDescription>
         ) : null}
+        <p className="text-2xl font-bold">
+          {data.rating}
+        </p>
       </CardHeader>
 
       <CardContent className="flex-1 pb-0">

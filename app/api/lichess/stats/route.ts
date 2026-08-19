@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-
-type ChessRecord = {
-  win: number;
-  loss: number;
-  draw: number;
-};
+import { ChessRecord } from "@/lib/chess/types";
 
 type LichessActivity = {
   games?: Record<string, ChessRecord>;
@@ -57,15 +52,17 @@ export async function GET() {
   }
 
   const activity = (await activityResponse.json()) as LichessActivity[];
-  const games: Record<string, ChessRecord> = {};
 
+  const games: Record<string, ChessRecord> = {};
   for (const interval of activity) {
     for (const [mode, record] of Object.entries(interval.games ?? {})) {
+      //should already exist, but just in case, initialize it
       if (!games[mode]) {
         games[mode] = {
           win: 0,
           loss: 0,
           draw: 0,
+          rating: account.perfs[mode]?.rating ?? 0,
         };
       }
 
