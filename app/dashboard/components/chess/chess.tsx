@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { WinRateChart } from "./WinRateChart"
 import { ChessRecord } from "@/lib/chess/types"
 
@@ -25,6 +26,7 @@ export function WinRate() {
   const [selectedMode, setSelectedMode] = useState("blitz")
   const [chessComStats, setChessComStats] = useState<ChessComStats | null>(null);
   const [lichessStats, setLichessData] = useState<LichessStats | null>(null);
+  const [combined, setCombined] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notConnected, setNotConnected] = useState(false);
@@ -105,9 +107,18 @@ export function WinRate() {
 
   const lichessData = lichessStats?.games[selectedMode] ?? null;
 
+  const combinedData =
+  chessComData && lichessData
+    ? {
+        win: chessComData.win + lichessData.win,
+        loss: chessComData.loss + lichessData.loss,
+        draw: chessComData.draw + lichessData.draw,
+      }
+    : null;
+
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="relative items-center pb-0">
         <CardTitle>Chess win rate</CardTitle>
         <CardDescription>Chess wins, losses and draws for chess apps </CardDescription>
         <Select value={selectedMode} onValueChange={(value) => setSelectedMode(value)}>
@@ -120,34 +131,55 @@ export function WinRate() {
             <SelectItem value="rapid">Rapid</SelectItem>
           </SelectContent>
         </Select>
+        <div className="absolute right-4 top-4 flex items-center gap-2 mb-6">
+          <Checkbox id="combine-chess"
+            checked={combined}
+            onCheckedChange={(checked) => setCombined(checked === true)}
+          />
+          <label htmlFor="combine-chess" className="text-sm">
+            Join data
+          </label>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {loading ? <p>Loading data...</p> : null}
 
-        {!loading && !error && chessComData && lichessData ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {chessComData && (
-                <WinRateChart
-                title="Chess.com"
-                description={""}
-                data={chessComData}
-                />
-            )}
-
-            {lichessData && !notConnected ? (
+        {!loading && !error ? (
+          <>
+          {combined && combinedData ? (
+            <div className="flex justify-center">
               <WinRateChart
-                title="Lichess"
-                description={""}
-                data={lichessData}
+                title="Combined"
+                description=""
+                data={combinedData}
               />
-            ) : notConnected ? (
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {chessComData && (
+                <WinRateChart
+                  title="Chess.com"
+                  description=""
+                  data={chessComData}
+                />
+              )}
+
+              {lichessData && !notConnected ? (
+                <WinRateChart
+                  title="Lichess"
+                  description=""
+                  data={lichessData}
+                />
+              ) : notConnected ? (
                 <div className="flex flex-col items-center justify-center p-4">
                   <p className="text-sm text-muted-foreground">
                     Not connected to Lichess
                   </p>
                 </div>
-            ) : null}
-          </div>
+              ) : null}
+            </div>
+          )}
+          </>
         ) : null}
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
