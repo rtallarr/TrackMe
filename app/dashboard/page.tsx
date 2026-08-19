@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { Playtime } from "@/app/dashboard/components/steam";
 import { SpotifyTopTracks } from "./components/spotify";
 import { WinRate } from "./components/chess/chess";
+import { FlashcardPreview } from "@/app/dashboard/components/flashcard/preview";
 
 export default async function Page() {
   const cookieStore = await cookies();
@@ -18,6 +19,7 @@ export default async function Page() {
 
   return (
     <div className="py-8 px-4 md:px-8 lg:px-16 xl:px-32">
+      <FlashcardPreview />
       <div className="flex flex-col xl:flex-row gap-8 items-start">
         <div className="flex-2">
           <SpotifyTopTracks />
