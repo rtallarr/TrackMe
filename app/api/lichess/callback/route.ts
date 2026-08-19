@@ -11,11 +11,6 @@ type LichessTokenResponse = {
   error_description?: string;
 };
 
-type LichessUser = {
-  id: string;
-  username: string;
-};
-
 const exchangeCodeForToken = async (
   code: string,
   verifier: string,
