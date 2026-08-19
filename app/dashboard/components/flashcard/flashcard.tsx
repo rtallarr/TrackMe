@@ -16,23 +16,39 @@ export function Flashcard({ data }: FlashcardProps) {
 
       {data.spotify ? (
         <section className="mb-6">
-          <h3 className="mb-3 font-semibold">Spotify</h3>
-
-          <p>
-            <span className="text-muted-foreground">Top artist:</span>{" "}
-            {data.spotify.topArtist?.name ?? "No data"}
-          </p>
-
+          <div className="mb-3 flex items-baseline gap-2">
+            <h3 className="font-semibold">Spotify</h3>
+            <span className="text-xs text-muted-foreground">
+              {data.spotify.timeRange === "short_term"
+                ? "Last 4 weeks"
+                : data.spotify.timeRange === "medium_term"
+                  ? "Last 6 months"
+                  : "All time"}
+            </span>
+          </div>
           <p>
             <span className="text-muted-foreground">Top song:</span>{" "}
             {data.spotify.topTrack?.name ?? "No data"}
+          </p>
+          <p>
+            <span className="text-muted-foreground">Top artist:</span>{" "}
+            {data.spotify.topArtist?.name ?? "No data"}
           </p>
         </section>
       ) : null}
 
       {data.chess ? (
         <section className="mb-6">
-          <h3 className="mb-3 font-semibold">Chess</h3>
+          <div className="mb-3 flex items-baseline gap-2">
+            <h3 className="font-semibold">Chess</h3>
+            <span className="text-xs text-muted-foreground">
+              {data.chess.mode === "blitz"
+                ? "Blitz"
+                : data.chess.mode === "bullet"
+                  ? "Bullet"
+                  : "Rapid"}
+            </span>
+          </div>
           <div className="flex gap-6">
             <div>
               <p className="text-sm text-muted-foreground">Chess.com</p>

@@ -193,11 +193,13 @@ export async function GET(req: NextRequest) {
 
     const flashcardData: FlashcardData = {
       spotify: {
+        timeRange: spotifyTimeRange as "short_term" | "medium_term" | "long_term",
         topArtist,
         topTrack,
       },
 
       chess: {
+        mode: chessGameType as "blitz" | "bullet" | "rapid",
         chessComRating,
         lichessRating
       },

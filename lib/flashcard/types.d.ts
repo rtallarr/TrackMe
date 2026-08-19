@@ -9,6 +9,7 @@ export type FlashcardGame = {
 
 export type FlashcardData = {
   spotify?: {
+    timeRange: "short_term" | "medium_term" | "long_term";
     topArtist?: {
       name: string;
       imageUrl?: string;
@@ -21,6 +22,7 @@ export type FlashcardData = {
   };
 
   chess?: {
+    mode: "blitz" | "bullet" | "rapid";
     chessComRating?: number;
     lichessRating?: number;
   };
