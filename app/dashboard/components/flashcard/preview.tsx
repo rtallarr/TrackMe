@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Flashcard } from "./flashcard";
 import type { FlashcardData } from "@/lib/flashcard/types";
-
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type FlashcardPreviewProps = {
   spotifyTimeRange: string;
@@ -17,16 +18,26 @@ export function FlashcardPreview({
   const [data, setData] = useState<FlashcardData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
   const previewFlashcard = async () => {
     setLoading(true);
     setError(null);
 
-    const appsUsernames = localStorage.getItem("appsUsernames");
-    const chessUsername = appsUsernames ? JSON.parse(appsUsernames)["Chess.com"] : null;
-
     try {
-      const response = await fetch(`/api/flashcard?chessUsername=${chessUsername}&spotifyTimeRange=${spotifyTimeRange}&chessGameType=${chessGameType}`, {
+      const appsUsernames = localStorage.getItem("appsUsernames");
+      const chessUsername = appsUsernames ? JSON.parse(appsUsernames)["Chess.com"] : null;
+
+      const params = new URLSearchParams({
+        spotifyTimeRange,
+        chessGameType,
+      });
+
+      if (chessUsername) {
+        params.set("chessUsername", chessUsername);
+      }
+
+      const response = await fetch(`/api/flashcard?${params.toString()}`, {
         cache: "no-store",
       });
 
@@ -45,37 +56,45 @@ export function FlashcardPreview({
     }
   };
 
-  if (!data) {
-    return (
-      <div className="flex flex-col items-center gap-4">
-        <button
-          onClick={previewFlashcard}
-          disabled={loading}
-          className="rounded-md bg-primary px-4 py-2 text-primary-foreground"
-        >
-          {loading ? "Loading..." : "Share"}
-        </button>
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
 
-        {error && (
-          <p className="text-sm text-red-500">
-            {error}
-          </p>
-        )}
-      </div>
-    );
-  }
+    if (isOpen) {
+      previewFlashcard();
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <Flashcard data={data} />
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <button className="rounded-md bg-primary px-4 py-2 text-primary-foreground">
+          Share
+        </button>
+      </DialogTrigger>
 
-      <button
-        onClick={previewFlashcard}
-        disabled={loading}
-        className="rounded-md border px-4 py-2"
-      >
-        {loading ? "Refreshing..." : "Refresh"}
-      </button>
-    </div>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Share your TrackMe card</DialogTitle>
+          <DialogDescription>
+            Preview your current stats before generating the image.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex min-h-[400px] items-center justify-center">
+          {loading ? (
+            <p>Loading your stats...</p>
+          ) : error ? (
+            <p className="text-sm text-red-500">{error}</p>
+          ) : data ? (
+            <Flashcard data={data} />
+          ) : null}
+        </div>
+        <DialogFooter className="sm:justify-start">
+          <Button type="button" onClick={() => setOpen(false)}>
+            Close
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
