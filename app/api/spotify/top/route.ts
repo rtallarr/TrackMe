@@ -187,7 +187,7 @@ export async function GET(req: NextRequest) {
         }));
 
         const userId = "945d03b1-ca28-427e-8529-b4456144f88a"; 
-        createSnapshot(userId, "spotify", { limit, timeRange, artists, tracks });
+        createSnapshot(userId, "spotify", { timeRange, limit, artists, tracks });
 
         return NextResponse.json({
             limit,
