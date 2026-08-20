@@ -44,10 +44,17 @@ const TIME_RANGE_OPTIONS = [
   { value: "long_term", label: "All time" },
 ];
 
-export function SpotifyTopTracks() {
+type SpotifyTopTracksProps = {
+  timeRange: string;
+  onTimeRangeChange: (value: string) => void;
+};
+
+export function SpotifyTopTracks({
+  timeRange,
+  onTimeRangeChange,
+}: SpotifyTopTracksProps) {
   const [tracks, setTracks] = useState<TopTrack[]>([]);
   const [artists, setArtists] = useState<TopArtist[]>([]);
-  const [timeRange, setTimeRange] = useState("medium_term");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notConnected, setNotConnected] = useState(false);
@@ -102,14 +109,14 @@ export function SpotifyTopTracks() {
           if (res.status === 401) {
             setNotConnected(true);
           }
-          setTracks([]);
+          setArtists([]);
           return;
         }
 
         setArtists(data.artists ?? []);
       } catch {
         setError("Network error while loading Spotify artists");
-        setTracks([]);
+        setArtists([]);
       } finally {
         setLoading(false);
       }
@@ -132,7 +139,7 @@ export function SpotifyTopTracks() {
             id="spotify-time-range"
             className="mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm"
             value={timeRange}
-            onChange={(event) => setTimeRange(event.target.value)}
+            onChange={(event) => onTimeRangeChange(event.target.value)}
           >
             {TIME_RANGE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>

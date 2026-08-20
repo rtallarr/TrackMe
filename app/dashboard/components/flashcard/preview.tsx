@@ -4,7 +4,16 @@ import { useState } from "react";
 import { Flashcard } from "./flashcard";
 import type { FlashcardData } from "@/lib/flashcard/types";
 
-export function FlashcardPreview() {
+
+type FlashcardPreviewProps = {
+  spotifyTimeRange: string;
+  chessGameType: string;
+};
+
+export function FlashcardPreview({
+  spotifyTimeRange,
+  chessGameType,
+}: FlashcardPreviewProps) {
   const [data, setData] = useState<FlashcardData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +26,7 @@ export function FlashcardPreview() {
     const chessUsername = appsUsernames ? JSON.parse(appsUsernames)["Chess.com"] : null;
 
     try {
-      const response = await fetch(`/api/flashcard?chessUsername=${chessUsername}`, {
+      const response = await fetch(`/api/flashcard?chessUsername=${chessUsername}&spotifyTimeRange=${spotifyTimeRange}&chessGameType=${chessGameType}`, {
         cache: "no-store",
       });
 

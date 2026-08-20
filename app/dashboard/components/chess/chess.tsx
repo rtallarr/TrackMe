@@ -22,8 +22,15 @@ type LichessStats = {
   games: Record<string, ChessRecord>;
 };
 
-export function WinRate() {
-  const [selectedMode, setSelectedMode] = useState("blitz")
+type WinRateProps = {
+  gameType: string;
+  onGameTypeChange: (value: string) => void;
+};
+
+export function WinRate({
+  gameType,
+  onGameTypeChange,
+}: WinRateProps) {
   const [chessComStats, setChessComStats] = useState<ChessComStats | null>(null);
   const [lichessStats, setLichessData] = useState<LichessStats | null>(null);
   const [combined, setCombined] = useState(false);
@@ -97,7 +104,7 @@ export function WinRate() {
     fetchDataLichess()
   }, []);
 
-  const chessComMode = chessComStats?.[`chess_${selectedMode}`]
+  const chessComMode = chessComStats?.[`chess_${gameType}`]
   const chessComData = {
     win: chessComMode?.record.win ?? 0,
     loss: chessComMode?.record.loss ?? 0,
@@ -105,7 +112,7 @@ export function WinRate() {
     rating: chessComMode?.last.rating ?? 0,
   }
 
-  const lichessData = lichessStats?.games[selectedMode] ?? null;
+  const lichessData = lichessStats?.games[gameType] ?? null;
 
   const combinedData =
   chessComData && lichessData
@@ -121,7 +128,7 @@ export function WinRate() {
       <CardHeader className="relative items-center pb-0">
         <CardTitle>Chess win rate</CardTitle>
         <CardDescription>Chess wins, losses and draws for chess apps </CardDescription>
-        <Select value={selectedMode} onValueChange={(value) => setSelectedMode(value)}>
+        <Select value={gameType} onValueChange={onGameTypeChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue />
           </SelectTrigger>
