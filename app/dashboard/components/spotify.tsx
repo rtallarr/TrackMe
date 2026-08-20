@@ -26,16 +26,14 @@ type TopArtist = {
   imageUrl: string | null;
 };
 
-type TopTracksResponse = {
+type SpotifyTopItems = {
   error?: string;
   details?: string;
-  tracks?: TopTrack[];
-};
-
-type TopArtistsResponse = {
-  error?: string;
-  details?: string;
-  artists?: TopArtist[];
+  limit: number;
+  timeRange: string;
+  total: number;
+  tracks: TopTrack[];
+  artists: TopArtist[];
 };
 
 const TIME_RANGE_OPTIONS = [
@@ -53,77 +51,46 @@ export function SpotifyTopTracks({
   timeRange,
   onTimeRangeChange,
 }: SpotifyTopTracksProps) {
-  const [tracks, setTracks] = useState<TopTrack[]>([]);
-  const [artists, setArtists] = useState<TopArtist[]>([]);
+  const [topItems, setTopItems] = useState<SpotifyTopItems | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notConnected, setNotConnected] = useState(false);
 
   useEffect(() => {
-    const fetchTracks = async () => {
+    const fetchTop = async () => {
       setLoading(true);
       setError(null);
       setNotConnected(false);
 
       try {
-        const res = await fetch(`/api/spotify/top/tracks?limit=10&time_range=${timeRange}`, {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `/api/spotify/top?limit=10&time_range=${timeRange}`,
+          {
+            cache: "no-store",
+          }
+        );
 
-        const data = (await res.json()) as TopTracksResponse;
+        const data = (await res.json()) as SpotifyTopItems;
 
         if (!res.ok) {
-          const message = data.error || "Failed to load Spotify tracks";
+          const message = data.error || "Failed to load Spotify data";
           setError(message);
           if (res.status === 401) {
             setNotConnected(true);
           }
-          setTracks([]);
+          setTopItems(null);
           return;
         }
-
-        setTracks(data.tracks ?? []);
+        setTopItems(data);
       } catch {
-        setError("Network error while loading Spotify tracks");
-        setTracks([]);
+        setError("Network error while loading Spotify data");
+        setTopItems(null);
       } finally {
         setLoading(false);
       }
     };
 
-    const fetchArtists = async () => {
-      setLoading(true);
-      setError(null);
-      setNotConnected(false);
-
-      try {
-        const res = await fetch(`/api/spotify/top/artists?limit=10&time_range=${timeRange}`, {
-          cache: "no-store",
-        });
-
-        const data = (await res.json()) as TopArtistsResponse;
-
-        if (!res.ok) {
-          const message = data.error || "Failed to load Spotify artists";
-          setError(message);
-          if (res.status === 401) {
-            setNotConnected(true);
-          }
-          setArtists([]);
-          return;
-        }
-
-        setArtists(data.artists ?? []);
-      } catch {
-        setError("Network error while loading Spotify artists");
-        setArtists([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTracks();
-    fetchArtists();
+    fetchTop();
   }, [timeRange]);
 
   return (
@@ -163,14 +130,14 @@ export function SpotifyTopTracks({
 
         {!loading && !notConnected && error ? <p className="text-sm text-red-500">{error}</p> : null}
 
-        {!loading && !error && tracks.length === 0 && artists.length === 0 ? (
+        {!loading && !error && topItems?.tracks.length === 0 ? (
           <p className="text-sm text-muted-foreground">No top items available for this period.</p>
         ) : null}
         
-        {!loading && tracks.length > 0 && artists.length > 0 ? (
+        {!loading && topItems?.tracks.length > 0 ? (
           <div className="flex justify-evenly flex-wrap gap-6">
             <ul className="flex-1">
-              {tracks.map((track, index) => (
+              {topItems?.tracks.map((track, index) => (
                 <li key={track.id} className="flex items-center gap-3 rounded-md border p-3 mb-1">
                   {track.imageUrl ? (
                     <Image
@@ -203,7 +170,7 @@ export function SpotifyTopTracks({
               ))}
             </ul>
             <ul className="flex-1">
-              {artists.map((artist, index) => (
+              {topItems?.artists.map((artist, index) => (
                 <li key={artist.id} className="flex items-center gap-3 rounded-md border p-3 mb-1">
                   {artist.imageUrl ? (
                     <Image

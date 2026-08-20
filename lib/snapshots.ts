@@ -3,34 +3,40 @@ import { sql } from "@/lib/db";
 
 export async function createSnapshot(
   userId: string,
+  provider: string,
   data: unknown
 ) {
   const snapshotId = crypto.randomUUID();
-  const blobPath = `snapshots/${userId}/${snapshotId}.json`;
+  const blobPath = `snapshots/${userId}/${provider}/${snapshotId}.json`;
 
   const blob = await put(
-    blobPath,
-    JSON.stringify(data),
-    {
-      access: "private",
-      contentType: "application/json",
-    }
+      blobPath,
+      JSON.stringify(data),
+      {
+          access: "private",
+          contentType: "application/json",
+      }
   );
 
   await sql`
-    INSERT INTO snapshots (
-      id,
-      user_id,
-      blob_path
-    )
-    VALUES (
-      ${snapshotId},
-      ${userId},
-      ${blob.pathname}
-    )
+      INSERT INTO snapshots (
+          id,
+          user_id,
+          provider,
+          blob_path
+      )
+      VALUES (
+          ${snapshotId},
+          ${userId},
+          ${provider},
+          ${blob.pathname}
+      )
   `;
 
-  return snapshotId;
+  return {
+      id: snapshotId,
+      path: blob.pathname,
+  };
 }
 
 export async function getSnapshot(snapshotId: string) {
