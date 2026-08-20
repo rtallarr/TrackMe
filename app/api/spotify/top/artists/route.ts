@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { put } from "@vercel/blob";
+import { sql } from "@/lib/db";
 
 type SpotifyTokenResponse = {
     access_token?: string;
@@ -130,6 +132,34 @@ export async function GET(req: NextRequest) {
             spotifyUrl: artist.external_urls.spotify,
             imageUrl: artist.images?.[0]?.url ?? null,
         }));
+
+        const userId = "945d03b1-ca28-427e-8529-b4456144f88a"; 
+        const snapshotId = crypto.randomUUID();
+        const blobPath = `snapshots/${userId}/spotify/${snapshotId}.json`;
+
+        const blob = await put(
+            blobPath,
+            JSON.stringify(artists),
+            {
+                access: "private",
+                contentType: "application/json",
+            }
+        );
+
+        await sql`
+            INSERT INTO snapshots (
+                id,
+                user_id,
+                provider,
+                blob_path
+            )
+            VALUES (
+                ${snapshotId},
+                ${userId},
+                'spotify',
+                ${blob.pathname}
+            )
+            `;
 
         return NextResponse.json({
             limit,
