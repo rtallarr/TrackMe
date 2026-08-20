@@ -6,7 +6,7 @@ type FlashcardProps = {
 
 export function Flashcard({ data }: FlashcardProps) {
   return (
-    <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-lg">
+    <div className="w-[420px] rounded-2xl border bg-card p-6 shadow-lg">
       <div className="mb-6">
         <h2 className="text-2xl font-bold">TrackMe</h2>
         <p className="text-sm text-muted-foreground">
