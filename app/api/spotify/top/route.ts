@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createSnapshot } from "@/lib/snapshots";
+import { getCurrentUser } from "@/lib/auth";
 
 type SpotifyTokenResponse = {
     access_token?: string;
@@ -186,8 +187,18 @@ export async function GET(req: NextRequest) {
             imageUrl: track.album.images?.[0]?.url ?? null,
         }));
 
-        const userId = "945d03b1-ca28-427e-8529-b4456144f88a"; 
-        createSnapshot(userId, "spotify", { timeRange, limit, artists, tracks });
+        const user = await getCurrentUser();
+
+        if (!user) {
+            return NextResponse.json(
+                {
+                    error: "Not authenticated",
+                },
+                { status: 401 }
+            );
+        }
+
+        await createSnapshot(user.id, "spotify", { timeRange, limit, artists, tracks });
 
         return NextResponse.json({
             limit,

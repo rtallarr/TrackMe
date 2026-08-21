@@ -1,5 +1,6 @@
 'use client';
 
+import { UserMenu } from '@/app/dashboard/components/user-menu';
 import Logo from '@/components/logo';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -46,6 +47,7 @@ export default function NavBar() {
             );
           })}
         </div>
+        <UserMenu />
       </nav>
     </header>
   );

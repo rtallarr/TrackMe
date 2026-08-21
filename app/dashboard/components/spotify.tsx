@@ -134,7 +134,7 @@ export function SpotifyTopTracks({
           <p className="text-sm text-muted-foreground">No top items available for this period.</p>
         ) : null}
         
-        {!loading && topItems?.tracks.length > 0 ? (
+        {!loading && topItems?.tracks.length !== 0 ? (
           <div className="flex justify-evenly flex-wrap gap-6">
             <ul className="flex-1">
               {topItems?.tracks.map((track, index) => (
