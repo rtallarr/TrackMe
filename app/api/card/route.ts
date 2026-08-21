@@ -27,8 +27,31 @@ export async function POST() {
             RETURNING id, slug, created_at
         `;
 
+        const snapshots = await sql`
+            SELECT DISTINCT ON (provider)
+                id,
+                provider
+            FROM snapshots
+            WHERE user_id = ${user.id}
+            ORDER BY provider, created_at DESC
+        `;
+
+        for (const snapshot of snapshots) {
+            await sql`
+                INSERT INTO card_snapshots (
+                    card_id,
+                    snapshot_id
+                )
+                VALUES (
+                    ${card.id},
+                    ${snapshot.id}
+                )
+            `;
+        }
+
         return NextResponse.json({
             card,
+            snapshots,
         });
     } catch (error) {
         console.error("Create card error:", error);
