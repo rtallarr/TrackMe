@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
-import { getCardData } from "@/lib/card-data";
+import { getCardData, type SnapshotRow } from "@/lib/card-data";
 
 type RouteContext = {
     params: Promise<{
@@ -46,7 +46,7 @@ export async function GET(
                 ON s.id = cs.snapshot_id
             WHERE cs.card_id = ${card.id}
             ORDER BY s.provider;
-        `;
+        ` as SnapshotRow[];
 
         return NextResponse.json({
             card: {

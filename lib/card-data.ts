@@ -4,7 +4,8 @@ import type { SpotifyArtist, SpotifyTrack } from "@/lib/spotify/types";
 import type { Game } from "@/lib/steam/types";
 import type { ChessRecord } from "@/lib/chess/types";
 
-type SnapshotRow = {
+export type SnapshotRow = {
+  id: string;
   provider: string;
   blob_path: string;
 };

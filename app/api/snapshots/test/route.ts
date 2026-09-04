@@ -27,7 +27,7 @@ export async function POST() {
     createdAt: new Date().toISOString(),
   };
 
-  const snapshot = await createSnapshot(userId, data);
+  const snapshot = await createSnapshot(userId, "test", data);
 
   return NextResponse.json({
     userId,

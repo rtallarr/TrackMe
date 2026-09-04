@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { getCardData } from "@/lib/card-data";
+import { getCardData, type SnapshotRow } from "@/lib/card-data";
 import { createSnapshot } from "@/lib/snapshots";
 import { cookies } from "next/headers";
 import type { Game } from "@/lib/steam/types";
@@ -41,7 +41,7 @@ async function collectSnapshots(
     chessGameType: string
 ) {
     const cookieStore = await cookies();
-    const snapshots: { id: string; provider: string; blob_path: string }[] = [];
+    const snapshots: SnapshotRow[] = [];
     const spotifyRefreshToken = cookieStore.get("spotify_refresh_token")?.value;
     const lichessAccessToken = cookieStore.get("lichess_access_token")?.value;
     const usernamesCookie = cookieStore.get("usernames")?.value;
@@ -178,8 +178,8 @@ async function collectSnapshots(
     return snapshots;
 }
 
-async function getTodaysSnapshots(userId: string) {
-    return sql`
+async function getTodaysSnapshots(userId: string): Promise<SnapshotRow[]> {
+    const snapshots = await sql`
         SELECT DISTINCT ON (provider)
             id,
             provider,
@@ -190,6 +190,8 @@ async function getTodaysSnapshots(userId: string) {
           AND created_at < CURRENT_DATE + INTERVAL '1 day'
         ORDER BY provider, created_at DESC
     `;
+
+    return snapshots as unknown as SnapshotRow[];
 }
 
 export async function POST(request: Request) {
@@ -219,7 +221,7 @@ export async function POST(request: Request) {
                 FROM card_snapshots cs
                 JOIN snapshots s ON s.id = cs.snapshot_id
                 WHERE cs.card_id = ${existingCard.id}
-            `;
+            ` as SnapshotRow[];
 
             return NextResponse.json({
                 card: existingCard,
