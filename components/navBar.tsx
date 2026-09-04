@@ -1,5 +1,6 @@
 'use client';
 
+import { UserMenu } from '@/app/dashboard/components/user-menu';
 import Logo from '@/components/logo';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -13,6 +14,10 @@ const navItems = [
 
 export default function NavBar() {
   const pathname = usePathname();
+
+  if (pathname.startsWith('/card/')) {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/75 backdrop-blur-xl">
@@ -46,6 +51,7 @@ export default function NavBar() {
             );
           })}
         </div>
+        <UserMenu />
       </nav>
     </header>
   );

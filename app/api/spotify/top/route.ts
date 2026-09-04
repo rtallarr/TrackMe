@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { createSnapshot } from "@/lib/snapshots";
+import { getCurrentUser } from "@/lib/auth";
 
 type SpotifyTokenResponse = {
     access_token?: string;
@@ -26,6 +28,26 @@ type SpotifyTopArtists = {
     duration_ms: number;
     external_urls: { spotify: string };
     uri: string;
+};
+
+type SpotifyArtist = {
+	id: string;
+	name: string;
+};
+
+type SpotifyTopTrack = {
+	id: string;
+	name: string;
+	popularity: number;
+	duration_ms: number;
+	external_urls: { spotify: string };
+	album: {
+		id: string;
+		name: string;
+		release_date: string;
+		images: SpotifyImage[];
+	};
+	artists: SpotifyArtist[];
 };
 
 const VALID_TIME_RANGES = new Set(["short_term", "medium_term", "long_term"]);
@@ -131,11 +153,59 @@ export async function GET(req: NextRequest) {
             imageUrl: artist.images?.[0]?.url ?? null,
         }));
 
+        const topTracksResponse = await fetch(
+            `https://api.spotify.com/v1/me/top/tracks?time_range=${timeRange}&limit=${limit}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                cache: "no-store",
+            }
+        );
+
+        const topTracksData = await topTracksResponse.json();
+
+        if (!topTracksResponse.ok) {
+            return NextResponse.json(
+                {
+                    error: "Spotify API request failed",
+                    details: topTracksData,
+                },
+                { status: topTracksResponse.status }
+            );
+        }
+
+        const tracks = ((topTracksData.items ?? []) as SpotifyTopTrack[]).map((track) => ({
+            id: track.id,
+            name: track.name,
+            artists: track.artists.map((artist) => artist.name),
+            album: track.album.name,
+            releaseDate: track.album.release_date,
+            durationMs: track.duration_ms,
+            popularity: track.popularity,
+            spotifyUrl: track.external_urls.spotify,
+            imageUrl: track.album.images?.[0]?.url ?? null,
+        }));
+
+        const user = await getCurrentUser();
+
+        if (!user) {
+            return NextResponse.json(
+                {
+                    error: "Not authenticated",
+                },
+                { status: 401 }
+            );
+        }
+
+        await createSnapshot(user.id, "spotify", { timeRange, limit, artists, tracks });
+
         return NextResponse.json({
             limit,
             timeRange,
             total: artists.length,
             artists,
+            tracks,
         });
     } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to fetch top Spotify tracks";
