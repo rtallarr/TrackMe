@@ -1,4 +1,5 @@
 import type { FlashcardData } from "@/lib/flashcard/types";
+import Image from "next/image";
 
 type FlashcardProps = {
   data: FlashcardData;
@@ -30,9 +31,11 @@ export function Flashcard({ data }: FlashcardProps) {
                 Top song
               </p>
               {data.spotify.topTrack?.imageUrl ? (
-                <img
+                <Image
                   src={data.spotify.topTrack.imageUrl}
                   alt=""
+                  width={180}
+                  height={180}
                   className="mt-3 aspect-square w-full rounded-xl object-cover"
                 />
               ) : null}
@@ -49,9 +52,11 @@ export function Flashcard({ data }: FlashcardProps) {
                 Top artist
               </p>
               {data.spotify.topArtist?.imageUrl ? (
-                <img
+                <Image
                   src={data.spotify.topArtist.imageUrl}
                   alt=""
+                  width={180}
+                  height={180}
                   className="mt-3 aspect-square w-full rounded-full object-cover"
                 />
               ) : null}

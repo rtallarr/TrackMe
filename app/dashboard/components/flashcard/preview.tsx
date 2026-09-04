@@ -19,7 +19,7 @@ export function FlashcardPreview({
 }: FlashcardPreviewProps) {
   const [data, setData] = useState<FlashcardData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [generatingImage, setGeneratingImage] = useState(false);
+  //const [generatingImage, setGeneratingImage] = useState(false);
   const [creatingLink, setCreatingLink] = useState(false);
   const [publicLink, setPublicLink] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -63,53 +63,53 @@ export function FlashcardPreview({
     }
   };
 
-  const shareImage = async () => {
-    if (!cardRef.current) return;
-
-    setGeneratingImage(true);
-    setError(null);
-
-    try {
-      const blob = await toBlob(cardRef.current, {
-        cacheBust: true,
-        pixelRatio: 2,
-      });
-
-      if (!blob) {
-        throw new Error("Failed to generate image");
-      }
-
-      const file = new File([blob], "trackme-card.png", {
-        type: "image/png",
-      });
-
-      if (!navigator.share || !navigator.canShare) {
-        setError("Image sharing is not supported on this browser.");
-        return;
-      }
-
-      if (!navigator.canShare({ files: [file] })) {
-        setError("This browser cannot share image files.");
-        return;
-      }
-
-      await navigator.share({
-        files: [file],
-      });
-    } catch (error) {
-      if (
-        error instanceof DOMException &&
-        error.name === "AbortError"
-      ) {
-        return;
-      }
-
-      console.error("Failed to share image:", error);
-      setError("Failed to share image.");
-    } finally {
-      setGeneratingImage(false);
-    }
-  };
+  //const shareImage = async () => {
+  //  if (!cardRef.current) return;
+//
+  //  setGeneratingImage(true);
+  //  setError(null);
+//
+  //  try {
+  //    const blob = await toBlob(cardRef.current, {
+  //      cacheBust: true,
+  //      pixelRatio: 2,
+  //    });
+//
+  //    if (!blob) {
+  //      throw new Error("Failed to generate image");
+  //    }
+//
+  //    const file = new File([blob], "trackme-card.png", {
+  //      type: "image/png",
+  //    });
+//
+  //    if (!navigator.share || !navigator.canShare) {
+  //      setError("Image sharing is not supported on this browser.");
+  //      return;
+  //    }
+//
+  //    if (!navigator.canShare({ files: [file] })) {
+  //      setError("This browser cannot share image files.");
+  //      return;
+  //    }
+//
+  //    await navigator.share({
+  //      files: [file],
+  //    });
+  //  } catch (error) {
+  //    if (
+  //      error instanceof DOMException &&
+  //      error.name === "AbortError"
+  //    ) {
+  //      return;
+  //    }
+//
+  //    console.error("Failed to share image:", error);
+  //    setError("Failed to share image.");
+  //  } finally {
+  //    setGeneratingImage(false);
+  //  }
+  //};
 
   const downloadImage = async () => {
     if (!cardRef.current) return;
@@ -225,7 +225,7 @@ export function FlashcardPreview({
           <Button
             variant="secondary"
             onClick={createPublicCard}
-            disabled={!data || generatingImage || creatingLink}
+            disabled={!data || creatingLink} //|| generatingImage
           >
             {creatingLink ? "Creating link..." : "Create public link"}
           </Button>
@@ -233,7 +233,7 @@ export function FlashcardPreview({
           <Button
             variant="outline"
             onClick={downloadImage}
-            disabled={!data || generatingImage}
+            disabled={!data} //|| generatingImage
           >
             Download
           </Button>

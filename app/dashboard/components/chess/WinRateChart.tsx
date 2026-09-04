@@ -32,23 +32,26 @@ export function WinRateChart({
   description,
   data,
 }: WinRateChartProps) {
-  const chartData = [
-    {
-      name: "Wins",
-      value: data.win,
-      fill: "var(--chart-2)",
-    },
-    {
-      name: "Losses",
-      value: data.loss,
-      fill: "var(--chart-5)",
-    },
-    {
-      name: "Draws",
-      value: data.draw,
-      fill: "var(--chart-1)",
-    },
-  ];
+  const chartData = useMemo(
+    () => [
+      {
+        name: "Wins",
+        value: data.win,
+        fill: "var(--chart-2)",
+      },
+      {
+        name: "Losses",
+        value: data.loss,
+        fill: "var(--chart-5)",
+      },
+      {
+        name: "Draws",
+        value: data.draw,
+        fill: "var(--chart-1)",
+      },
+    ],
+    [data.win, data.loss, data.draw]
+  );
 
   const totalCount = useMemo(
     () => chartData.reduce((sum, item) => sum + item.value, 0),
