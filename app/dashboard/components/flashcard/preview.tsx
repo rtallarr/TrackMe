@@ -218,9 +218,9 @@ export function FlashcardPreview({
         ) : null}
 
         <DialogFooter>
-          <Button onClick={shareImage} disabled={!data || generatingImage}>
+          {/* <Button onClick={shareImage} disabled={!data || generatingImage}>
             {generatingImage ? "Generating..." : "Share as image"}
-          </Button>
+          </Button> */}
 
           <Button
             variant="secondary"

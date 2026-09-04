@@ -178,6 +178,20 @@ async function collectSnapshots(
     return snapshots;
 }
 
+async function getTodaysSnapshots(userId: string) {
+    return sql`
+        SELECT DISTINCT ON (provider)
+            id,
+            provider,
+            blob_path
+        FROM snapshots
+        WHERE user_id = ${userId}
+          AND created_at >= CURRENT_DATE
+          AND created_at < CURRENT_DATE + INTERVAL '1 day'
+        ORDER BY provider, created_at DESC
+    `;
+}
+
 export async function POST(request: Request) {
     try {
         const user = await getCurrentUser();
@@ -209,7 +223,6 @@ export async function POST(request: Request) {
 
             return NextResponse.json({
                 card: existingCard,
-                snapshots,
                 data: await getCardData(snapshots, user.username),
                 existing: true,
             });
@@ -218,7 +231,10 @@ export async function POST(request: Request) {
         const url = new URL(request.url);
         const spotifyTimeRange = url.searchParams.get("spotifyTimeRange") ?? "short_term";
         const chessGameType = url.searchParams.get("chessGameType") ?? "blitz";
-        const snapshots = await collectSnapshots(user.id, spotifyTimeRange, chessGameType);
+        const todaysSnapshots = await getTodaysSnapshots(user.id);
+        const snapshots = todaysSnapshots.length > 0
+            ? todaysSnapshots
+            : await collectSnapshots(user.id, spotifyTimeRange, chessGameType);
 
         const slug = crypto.randomUUID();
 
@@ -249,7 +265,6 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
             card,
-            snapshots,
             data: await getCardData(snapshots, user.username),
             existing: false,
         });
