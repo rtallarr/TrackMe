@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { get } from "@vercel/blob";
 import { sql } from "@/lib/db";
+import { getCardData } from "@/lib/card-data";
 
 type RouteContext = {
     params: Promise<{
@@ -17,11 +17,14 @@ export async function GET(
 
         const [card] = await sql`
             SELECT
-                id,
-                slug,
-                created_at
-            FROM cards
-            WHERE slug = ${slug}
+                c.id,
+                c.slug,
+                c.created_at,
+                u.username
+            FROM cards c
+            JOIN users u
+                ON u.id = c.user_id
+            WHERE c.slug = ${slug}
             LIMIT 1
         `;
 
@@ -45,32 +48,14 @@ export async function GET(
             ORDER BY s.provider;
         `;
 
-        const data: Record<string, unknown> = {};
-
-        for (const snapshot of snapshots) {
-            const result = await get(snapshot.blob_path, {
-                access: "private",
-            });
-
-            if (!result) {
-                console.error(
-                    `Blob not found: ${snapshot.blob_path}`
-                );
-                continue;
-            }
-
-            const text = await new Response(result.stream).text();
-
-            data[snapshot.provider] = JSON.parse(text);
-        }
-
         return NextResponse.json({
             card: {
                 id: card.id,
                 slug: card.slug,
                 createdAt: card.created_at,
+                username: card.username,
             },
-            data,
+            data: await getCardData(snapshots, card.username),
         });
     } catch (error) {
         console.error("Get card error:", error);

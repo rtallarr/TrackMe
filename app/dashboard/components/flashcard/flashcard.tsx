@@ -6,19 +6,17 @@ type FlashcardProps = {
 
 export function Flashcard({ data }: FlashcardProps) {
   return (
-    <div className="w-[420px] rounded-2xl border bg-card p-6 shadow-lg">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">TrackMe</h2>
-        <p className="text-sm text-muted-foreground">
-          Your stats at a glance
-        </p>
+    <div className="w-[420px] overflow-hidden rounded-[28px] bg-[#101b17] text-white shadow-2xl">
+      <div className="relative overflow-hidden px-7 pb-8 pt-7">
+        <div className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-[#d5f36b] opacity-90" />
+        <div className="absolute -bottom-28 -left-20 h-64 w-64 rounded-full border-[42px] border-[#275b4c]" />
       </div>
 
       {data.spotify ? (
-        <section className="mb-6">
-          <div className="mb-3 flex items-baseline gap-2">
-            <h3 className="font-semibold">Spotify</h3>
-            <span className="text-xs text-muted-foreground">
+        <section className="border-t border-white/10 bg-[#f4f1e8] px-7 py-6 text-[#101b17]">
+          <div className="mb-4 flex items-baseline justify-between gap-2">
+            <h3 className="text-lg font-black">Spotify</h3>
+            <span className="text-xs font-medium text-[#59766b]">
               {data.spotify.timeRange === "short_term"
                 ? "Last 4 weeks"
                 : data.spotify.timeRange === "medium_term"
@@ -26,22 +24,51 @@ export function Flashcard({ data }: FlashcardProps) {
                   : "All time"}
             </span>
           </div>
-          <p>
-            <span className="text-muted-foreground">Top song:</span>{" "}
-            {data.spotify.topTrack?.name ?? "No data"}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Top artist:</span>{" "}
-            {data.spotify.topArtist?.name ?? "No data"}
-          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="overflow-hidden rounded-2xl bg-[#d5f36b] p-3">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#426052]">
+                Top song
+              </p>
+              {data.spotify.topTrack?.imageUrl ? (
+                <img
+                  src={data.spotify.topTrack.imageUrl}
+                  alt=""
+                  className="mt-3 aspect-square w-full rounded-xl object-cover"
+                />
+              ) : null}
+              <p className="mt-3 truncate text-sm font-black">
+                {data.spotify.topTrack?.name ?? "No data"}
+              </p>
+              <p className="truncate text-xs text-[#426052]">
+                {data.spotify.topTrack?.artist ?? ""}
+              </p>
+            </div>
+
+            <div className="overflow-hidden rounded-2xl bg-[#dce7df] p-3">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#59766b]">
+                Top artist
+              </p>
+              {data.spotify.topArtist?.imageUrl ? (
+                <img
+                  src={data.spotify.topArtist.imageUrl}
+                  alt=""
+                  className="mt-3 aspect-square w-full rounded-full object-cover"
+                />
+              ) : null}
+              <p className="mt-3 truncate text-sm font-black">
+                {data.spotify.topArtist?.name ?? "No data"}
+              </p>
+              <p className="text-xs text-[#59766b]">On repeat</p>
+            </div>
+          </div>
         </section>
       ) : null}
 
       {data.chess ? (
-        <section className="mb-6">
-          <div className="mb-3 flex items-baseline gap-2">
-            <h3 className="font-semibold">Chess</h3>
-            <span className="text-xs text-muted-foreground">
+        <section className="border-t border-white/10 bg-[#f4f1e8] px-7 py-6 text-[#101b17]">
+          <div className="mb-3 flex items-baseline justify-between gap-2">
+            <h3 className="text-lg font-black">Chess</h3>
+            <span className="text-xs font-medium text-[#59766b]">
               {data.chess.mode === "blitz"
                 ? "Blitz"
                 : data.chess.mode === "bullet"
@@ -49,17 +76,17 @@ export function Flashcard({ data }: FlashcardProps) {
                   : "Rapid"}
             </span>
           </div>
-          <div className="flex gap-6">
-            <div>
-              <p className="text-sm text-muted-foreground">Chess.com</p>
-              <p className="text-2xl font-bold">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-2xl bg-white px-4 py-3">
+              <p className="text-xs text-[#59766b]">Chess.com</p>
+              <p className="mt-1 text-3xl font-black">
                 {data.chess.chessComRating ?? "-"}
               </p>
             </div>
 
-            <div>
-              <p className="text-sm text-muted-foreground">Lichess</p>
-              <p className="text-2xl font-bold">
+            <div className="rounded-2xl bg-white px-4 py-3">
+              <p className="text-xs text-[#59766b]">Lichess</p>
+              <p className="mt-1 text-3xl font-black">
                 {data.chess.lichessRating ?? "-"}
               </p>
             </div>
@@ -68,20 +95,21 @@ export function Flashcard({ data }: FlashcardProps) {
       ) : null}
 
       {data.steam ? (
-        <section>
-          <h3 className="mb-3 font-semibold">Top Games</h3>
+        <section className="border-t border-white/10 bg-[#f4f1e8] px-7 pb-7 pt-6 text-[#101b17]">
+          <h3 className="mb-3 text-lg font-black">Most played</h3>
 
-          <div className="space-y-2">
+          <div className="space-y-1">
             {data.steam.topGames.slice(0, 3).map((game, index) => (
               <div
                 key={game.appid}
-                className="flex items-center justify-between"
+                className="flex items-center justify-between border-b border-[#dce7df] py-2 last:border-0"
               >
-                <span>
-                  {index + 1}. {game.name}
+                <span className="min-w-0 truncate pr-3 text-sm font-bold">
+                  <span className="mr-2 text-xs text-[#59766b]">0{index + 1}</span>
+                  {game.name}
                 </span>
 
-                <span className="text-sm text-muted-foreground">
+                <span className="shrink-0 text-xs font-medium text-[#59766b]">
                   {Math.round(game.playtime_forever / 60)}h
                 </span>
               </div>

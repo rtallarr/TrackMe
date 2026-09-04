@@ -1,4 +1,4 @@
-type SpotifyTokenResponse = {
+export type SpotifyTokenResponse = {
     access_token?: string;
     token_type?: string;
     expires_in?: number;
@@ -8,13 +8,13 @@ type SpotifyTokenResponse = {
     error_description?: string;
 };
 
-type SpotifyImage = {
+export type SpotifyImage = {
     url: string;
     height: number | null;
     width: number | null;
 };
 
-type SpotifyTopArtists = {
+export type SpotifyTopArtists = {
     id: string;
     name: string;
     popularity: number;
@@ -25,12 +25,33 @@ type SpotifyTopArtists = {
     uri: string;
 };
 
-type SpotifyArtist = {
+//type SpotifyArtist = {
+//    id: string;
+//    name: string;
+//};
+
+export type SpotifyArtist = {
     id: string;
     name: string;
+    genres: string[];
+    popularity: number;
+    spotifyUrl: string;
+    imageUrl: string | null;
 };
 
-type SpotifyTopTrack = {
+export type SpotifyTrack = {
+    id: string;
+    name: string;
+    artists: string[];
+    album: string;
+    releaseDate: string;
+    durationMs: number;
+    popularity: number;
+    spotifyUrl: string;
+    imageUrl: string | null;
+};
+
+export type SpotifyTopTrack = {
     id: string;
     name: string;
     popularity: number;

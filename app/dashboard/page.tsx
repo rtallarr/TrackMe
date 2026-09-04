@@ -4,7 +4,6 @@ import { Playtime } from "@/app/dashboard/components/steam";
 import { SpotifyTopTracks } from "./components/spotify";
 import { WinRate } from "./components/chess/chess";
 import { FlashcardPreview } from "@/app/dashboard/components/flashcard/preview";
-import { ShareCardButton } from "@/app/dashboard/components/share-card-button";
 import { useEffect, useState } from "react";
 
 type Usernames = {
@@ -38,7 +37,6 @@ export default function Page() {
         spotifyTimeRange={spotifyTimeRange}
         chessGameType={chessGameType}
       />
-      <ShareCardButton />
       <div className="flex flex-col xl:flex-row gap-8 items-start">
         <div className="flex-2">
           <SpotifyTopTracks

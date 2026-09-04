@@ -15,6 +15,10 @@ const navItems = [
 export default function NavBar() {
   const pathname = usePathname();
 
+  if (pathname.startsWith('/card/')) {
+    return null;
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/75 backdrop-blur-xl">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">

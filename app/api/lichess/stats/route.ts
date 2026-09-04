@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ChessRecord } from "@/lib/chess/types";
+import { createSnapshot } from "@/lib/snapshots";
+import { getCurrentUser } from "@/lib/auth";
 
 type LichessActivity = {
   games?: Record<string, ChessRecord>;
@@ -71,6 +73,19 @@ export async function GET() {
       games[mode].draw += record.draw ?? 0;
     }
   }
+
+  const user = await getCurrentUser();
+
+  if (!user) {
+      return NextResponse.json(
+          {
+              error: "Not authenticated",
+          },
+          { status: 401 }
+      );
+  }
+
+  await createSnapshot(user.id, "lichess", games);
 
   return NextResponse.json({account, games});
 }
